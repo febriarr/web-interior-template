@@ -8,6 +8,13 @@ import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Typography } from '@/components/ui/typography'
 import type { ProductShowcaseProps, ShowcaseProduct } from '@/types/product-showcase'
+import {
+  Section,
+  SectionContent,
+  SectionDescription,
+  SectionHeader,
+  SectionTitle,
+} from '../section'
 
 /* ─── Default content ────────────────────────────────────────── */
 
@@ -206,118 +213,117 @@ export function ProductShowcase({
   const [featuredProduct, ...restProducts] = products
 
   return (
-    <section
-      className={cn(
-        'w-full px-5 py-8 sm:px-8 sm:py-10 md:px-12 lg:px-16 xl:px-20',
-        className,
-        classNames?.root,
-      )}
-    >
-      {/* ── Section header ── */}
-      <div className={cn('flex items-end justify-between mb-4 sm:mb-5', classNames?.header)}>
-        <div>
-          {label && (
-            <p
-              className={cn(
-                'text-[10px] sm:text-xs tracking-[0.15em] uppercase text-muted-foreground mb-1.5',
-                classNames?.label,
-              )}
-            >
-              {label}
-            </p>
-          )}
+    <Section className={cn(className, classNames?.root)}>
+      <SectionContent>
+        <SectionHeader
+          type="horizontal"
+          // Nanti ini di inject pake button field di path /fields bang
+          action={
+            viewAllHref && (
+              <Link
+                href={viewAllHref}
+                className={cn(
+                  'hidden sm:inline-flex items-center gap-1.5',
+                  'text-[10px] sm:text-xs tracking-[0.12em] uppercase text-foreground',
+                  'underline-offset-4 hover:underline transition-all duration-200',
+                  'min-h-[44px]',
+                  classNames?.viewAll,
+                )}
+              >
+                {viewAllLabel}
+              </Link>
+            )
+          }
+        >
+          <SectionTitle>{title}</SectionTitle>
+          {subtitle && <SectionDescription>{subtitle}</SectionDescription>}
+        </SectionHeader>
 
-          <h2
+        {/* ── Product grid ── */}
+        {products.length > 0 && (
+          <div
             className={cn(
-              'font-serif text-2xl sm:text-3xl md:text-4xl leading-tight tracking-[-0.01em] text-foreground',
-              classNames?.title,
-            )}
-          >
-            {title}
-          </h2>
-
-          {subtitle && (
-            <p className="mt-1.5 text-sm text-muted-foreground max-w-sm leading-relaxed">
-              {subtitle}
-            </p>
-          )}
-        </div>
-
-        {viewAllHref && (
-          <Link
-            href={viewAllHref}
-            className={cn(
-              'hidden sm:inline-flex items-center gap-1.5',
-              'text-[10px] sm:text-xs tracking-[0.12em] uppercase text-foreground',
-              'underline-offset-4 hover:underline transition-all duration-200',
-              'min-h-[44px]',
-              classNames?.viewAll,
-            )}
-          >
-            {viewAllLabel}
-          </Link>
-        )}
-      </div>
-
-      {/* ── Product grid ── */}
-      {products.length > 0 && (
-        <div
-          className={cn(
-            'grid gap-4 sm:gap-6 items-start',
-            /* 
+              'grid gap-4 sm:gap-6 items-start',
+              /* 
               Layout logic:
               - 1 product: single column, centered
               - 2 products: side by side on md+
               - 3+ products: left large + right stacked (masonry)
             */
-            products.length === 1
-              ? 'grid-cols-1 max-w-sm'
-              : products.length === 2
-                ? 'grid-cols-1 sm:grid-cols-2'
-                : 'grid-cols-1 md:grid-cols-2',
-            classNames?.grid,
-          )}
-        >
-          {/* ── Left: featured / large card ── */}
-          {featuredProduct && (
-            <ProductCard product={featuredProduct} size="large" classNames={classNames} />
-          )}
-
-          {/* ── Right: stacked smaller cards ── */}
-          {restProducts.length > 0 && (
-            <div className="flex flex-col gap-4 sm:gap-5">
-              {restProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  size="small"
-                  classNames={classNames}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Mobile "View all" link ── */}
-      {viewAllHref && (
-        <div className="mt-6 sm:hidden">
-          <Link
-            href={viewAllHref}
-            className={cn(
-              'inline-flex items-center gap-1.5',
-              'text-xs tracking-[0.12em] uppercase text-foreground',
-              'underline-offset-4 hover:underline transition-all duration-200',
-              'min-h-[44px]',
-              classNames?.viewAll,
+              products.length === 1
+                ? 'grid-cols-1 max-w-sm'
+                : products.length === 2
+                  ? 'grid-cols-1 sm:grid-cols-2'
+                  : 'grid-cols-1 md:grid-cols-2',
+              classNames?.grid,
             )}
           >
-            {viewAllLabel}
-          </Link>
-        </div>
-      )}
-    </section>
+            {/* ── Left: featured / large card ── */}
+            {featuredProduct && (
+              <ProductCard product={featuredProduct} size="large" classNames={classNames} />
+            )}
+
+            {/* ── Right: stacked smaller cards ── */}
+            {restProducts.length > 0 && (
+              <div className="flex flex-col gap-4 sm:gap-5">
+                {restProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    size="small"
+                    classNames={classNames}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Mobile "View all" link ── */}
+        {viewAllHref && (
+          <div className="mt-6 sm:hidden">
+            <Link
+              href={viewAllHref}
+              className={cn(
+                'inline-flex items-center gap-1.5',
+                'text-xs tracking-[0.12em] uppercase text-foreground',
+                'underline-offset-4 hover:underline transition-all duration-200',
+                'min-h-[44px]',
+                classNames?.viewAll,
+              )}
+            >
+              {viewAllLabel}
+            </Link>
+          </div>
+        )}
+      </SectionContent>
+    </Section>
   )
 }
 
 export default ProductShowcase
+
+// NOTE
+// ini cuma contoh penggunaan bang tapi nantinya makenya bukan section satur persatu
+// contohnya nanti
+
+// const content = data.content
+
+// return (
+//   <div className="min-h-screen w-full bg-secondary">
+//     {content.map((section, index) => (
+//       <Section key={index}>
+//         <SectionContent>
+//           {title && (
+//             <>
+//             <SectionTitle>{title}</SectionTitle>
+//             {subtitle && <SectionDescription>{subtitle}</SectionDescription>}
+//             </>
+//           )}
+
+//           {renderBlocks(content.blocks)}
+//         </SectionContent>
+//       </Section>
+//     )}
+//   </div>
+// )
