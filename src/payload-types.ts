@@ -65,10 +65,15 @@ export interface Config {
   auth: {
     users: UserAuthOperations;
   };
-  blocks: {};
+  blocks: {
+    threeGridProducts: ThreeGridProductsBlock;
+  };
   collections: {
     users: User;
     media: Media;
+    categories: Category;
+    products: Product;
+    pages: Page;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +83,9 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -119,10 +127,83 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ThreeGridProductsBlock".
+ */
+export interface ThreeGridProductsBlock {
+  items: {
+    position: 'largeLeft' | 'topRight' | 'bottomRight';
+    product: number | Product;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'threeGridProducts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  name: string;
+  category: number | Category;
+  /**
+   * auto generated slug from product name.
+   */
+  slug: string;
+  description?: string | null;
+  price: number;
+  thumbnail?: (number | null) | Media;
+  gallery?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  name?: string | null;
+  roles?: ('admin' | 'customer')[] | null;
+  profileImage?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -144,22 +225,51 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "pages".
  */
-export interface Media {
+export interface Page {
   id: number;
-  alt: string;
+  title: string;
+  slug: string;
+  hero: {
+    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    /**
+     * Use a new line (Enter) to create multiple lines.
+     */
+    title: string;
+    subtitle?: string | null;
+    media?: (number | null) | Media;
+    buttons?:
+      | {
+          label: string;
+          variant?: ('default' | 'secondary' | 'outline' | 'ghost' | 'destructive') | null;
+          linkType?: ('internal' | 'external') | null;
+          internalPath?: ('/' | '/about' | '/services' | '/products' | '/contact') | null;
+          externalUrl?: string | null;
+          newTab?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  content?:
+    | {
+        title?: string | null;
+        subtitle?: string | null;
+        orientation?: ('vertical' | 'horizontal' | 'centered') | null;
+        action: {
+          label: string;
+          variant?: ('default' | 'secondary' | 'outline' | 'ghost' | 'destructive') | null;
+          linkType?: ('internal' | 'external') | null;
+          internalPath?: ('/' | '/about' | '/services' | '/products' | '/contact') | null;
+          externalUrl?: string | null;
+          newTab?: boolean | null;
+        };
+        blocks: ThreeGridProductsBlock[];
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -192,6 +302,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -240,6 +362,9 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  roles?: T;
+  profileImage?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -263,6 +388,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -274,6 +400,104 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  name?: T;
+  category?: T;
+  slug?: T;
+  description?: T;
+  price?: T;
+  thumbnail?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  hero?:
+    | T
+    | {
+        type?: T;
+        title?: T;
+        subtitle?: T;
+        media?: T;
+        buttons?:
+          | T
+          | {
+              label?: T;
+              variant?: T;
+              linkType?: T;
+              internalPath?: T;
+              externalUrl?: T;
+              newTab?: T;
+              id?: T;
+            };
+      };
+  content?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        orientation?: T;
+        action?:
+          | T
+          | {
+              label?: T;
+              variant?: T;
+              linkType?: T;
+              internalPath?: T;
+              externalUrl?: T;
+              newTab?: T;
+            };
+        blocks?:
+          | T
+          | {
+              threeGridProducts?: T | ThreeGridProductsBlockSelect<T>;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ThreeGridProductsBlock_select".
+ */
+export interface ThreeGridProductsBlockSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        position?: T;
+        product?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

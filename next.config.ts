@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
       {
         pathname: '/**',
       },
+      
+    ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.febriardiansyah.my.id',
+      },
     ],
   },
   webpack: (webpackConfig) => {
