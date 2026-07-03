@@ -5,8 +5,32 @@ import { buttonField } from '../button'
 export const heroField = (): Field => ({
   name: 'hero',
   type: 'group',
-
   fields: [
+    {
+      name: 'type',
+      type: 'select',
+      defaultValue: 'lowImpact',
+      label: 'Type',
+      options: [
+        {
+          label: 'None',
+          value: 'none',
+        },
+        {
+          label: 'High Impact',
+          value: 'highImpact',
+        },
+        {
+          label: 'Medium Impact',
+          value: 'mediumImpact',
+        },
+        {
+          label: 'Low Impact',
+          value: 'lowImpact',
+        },
+      ],
+      required: true,
+    },
     {
       type: 'collapsible',
       label: 'Content',
@@ -27,24 +51,13 @@ export const heroField = (): Field => ({
     },
 
     {
-      type: 'collapsible',
-      label: 'Background',
-      fields: [
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
-        },
-        {
-          name: 'imageAlt',
-          type: 'text',
-          required: true,
-          admin: {
-            description: 'Describe the image for accessibility and SEO.',
-          },
-        },
-      ],
+      name: 'media',
+      type: 'upload',
+      admin: {
+        condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
+      },
+      relationTo: 'media',
+      required: true,
     },
 
     {
