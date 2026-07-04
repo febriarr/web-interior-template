@@ -1,6 +1,6 @@
 import { adminOnly } from '@/access/adminOnly'
 import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
-import { formatSlug } from '@/utilities/generateSlug'
+import { withAutoSlug } from '@/payload/hooks/slug'
 import { CollectionConfig } from 'payload'
 
 export const Products: CollectionConfig = {
@@ -16,17 +16,9 @@ export const Products: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [
-      ({ data, req }) => {
-        if (data?.title && !data?.slug) {
-          data.slug = formatSlug(data.title) // ini logic agar slug auto generate
-        }
-
-        if (data?._status === 'published' && !data?.publishedAt) {
-          data.publishedAt = new Date().toISOString() // dan generate publishedAt saat publish di trigger
-        }
-
-        return data
-      },
+      withAutoSlug({
+        source: 'name',
+      }),
     ],
   },
   fields: [

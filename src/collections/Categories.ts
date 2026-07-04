@@ -1,4 +1,4 @@
-import { formatSlug } from '@/utilities/generateSlug'
+import { withAutoSlug } from '@/payload/hooks/slug'
 import { CollectionConfig } from 'payload'
 
 export const Categories: CollectionConfig = {
@@ -11,12 +11,9 @@ export const Categories: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [
-      ({ data }) => {
-        if (data?.name && !data?.slug) {
-          data.slug = formatSlug(data.name) // ini logic agar slug auto generate
-        }
-        return data
-      },
+      withAutoSlug({
+        source: 'name',
+      }),
     ],
   },
   fields: [
