@@ -7,6 +7,12 @@ type Props = {
   hero: Page['hero']
 }
 
+// TODO
+/**
+ * Styling dengan layout refrence ente bang
+ * props nya sesuai type yang diatas ini
+ */
+
 export function HighImpactHero({ hero }: Props) {
   const { title, subtitle, media, buttons } = hero
 

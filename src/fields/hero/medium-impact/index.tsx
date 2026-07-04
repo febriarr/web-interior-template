@@ -7,6 +7,22 @@ type Props = {
   hero: Page['hero']
 }
 
+/**
+ *
+ * TODO
+ * data dari backend ada medianya bang
+ * tapi untuk layoutnya berbeda sama type high impact
+ * PERBEDAAN:
+ *
+ * HIGH IMPACT
+ * image jadi background dan styling nya sesuai reference
+ *
+ * MEDIUM IMPACT
+ * layout nya flex dimana
+ * title dan subtitle nya ada di sebelah kiri
+ * sedangkan imagenya ada disebelah kanan
+ */
+
 export function MediumImpactHero({ hero }: Props) {
   const { title, subtitle, media, buttons } = hero
 

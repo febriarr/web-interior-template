@@ -6,6 +6,12 @@ type Props = {
   hero: Page['hero']
 }
 
+/**
+ * TODO
+ * Hero ini gapake image bang
+ * layout nya center in semua
+ */
+
 export function LowImpactHero({ hero }: Props) {
   const { title, subtitle, buttons } = hero
 
