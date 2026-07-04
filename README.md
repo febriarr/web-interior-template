@@ -1,67 +1,120 @@
-# Payload Blank Template
+# Interior Website
 
-This template comes configured with the bare minimum to get started on anything you need.
+Halo! 👋
 
-## Quick start
+Project ini dibuat menggunakan **Next.js**, **TypeScript**, **Tailwind CSS**, **shadcn/ui**, dan **Payload CMS**.
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+Website ini memang ditujukan untuk kebutuhan **website interior**, tetapi kita tetap berusaha membangun komponen yang reusable supaya mudah dikembangkan dan di-maintain ke depannya.
 
-## Quick Start - local setup
+---
 
-To spin up this template locally, follow these steps:
+## Tech Stack
 
-### Clone
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Payload CMS
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+---
 
-### Development
+## Mindset Project
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+Ada satu mindset yang ingin kita pakai selama mengembangkan project ini.
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+> **Jangan membangun component berdasarkan halaman. Bangun reusable block yang bisa digunakan di berbagai halaman.**
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+Misalnya saat melihat desain baru, jangan langsung berpikir:
 
-#### Docker (Optional)
+- Hero Home
+- Hero About
+- Hero Services
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+Tapi coba lihat sebagai:
 
-To do so, follow these steps:
+- Hero
+- Gallery
+- CTA
+- Timeline
+- FAQ
+- Testimonials
+- Statistics
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+Karena kemungkinan besar block tersebut bisa digunakan lagi di halaman lain.
 
-## How it works
+---
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+## Kenapa Begitu?
 
-### Collections
+Kalau component dibuat berdasarkan halaman, lama-kelamaan project akan dipenuhi file seperti:
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+```text
+HomeHero.tsx
+AboutHero.tsx
+ServicesHero.tsx
+PortfolioHero.tsx
+```
 
-- #### Users (Authentication)
+Padahal secara fungsi hampir sama.
 
-  Users are auth-enabled collections that have access to the admin panel.
+Lebih baik cukup punya:
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/3.x/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+```text
+Hero.tsx
+```
 
-- #### Media
+Perbedaan isi berasal dari data CMS, bukan dari component yang berbeda.
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+---
 
-### Docker
+## Arsitektur Singkat
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+Payload CMS hanya menyediakan data.
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+Frontend bertugas mengubah data tersebut menjadi tampilan website.
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+Kurang lebih alurnya seperti ini:
 
-## Questions
+```text
+Payload CMS
+      │
+      ▼
+Page Data
+      │
+      ▼
+Page Renderer
+      │
+      ▼
+React Blocks
+      │
+      ▼
+Website
+```
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+Kalau belum pernah menggunakan Payload CMS, tidak masalah.
+
+Yang penting dipahami adalah frontend menerima data, lalu merender block yang sesuai.
+
+---
+
+## Prinsip Pengembangan
+
+Sebelum membuat block baru, coba tanyakan:
+
+- Apakah block seperti ini sudah ada?
+- Apakah cukup ditambah props?
+- Apakah benar-benar perlu component baru?
+- Apakah nanti bisa dipakai lagi?
+
+Kalau masih bisa reuse, lebih baik reuse.
+
+---
+
+## Dokumentasi
+
+Untuk memahami project lebih lanjut, silakan baca:
+
+- `docs/ARCHITECTURE.md`
+- `docs/CONTRIBUTING.md`
+
+Semoga dokumentasi ini bisa membantu kita menjaga project tetap rapi seiring bertambahnya fitur. Kalau ada ide atau pendekatan yang lebih baik, jangan ragu buat diskusi.
